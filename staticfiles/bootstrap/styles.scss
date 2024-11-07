@@ -1,0 +1,65 @@
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+@import "../../node_modules/bootstrap/scss/mixins";
+
+
+$primary: #002448;
+$secondary: #ffe500;
+$success: #28a745;
+$info: #1b69ae;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #343a40;
+$lightgray: #e5e5e5;
+$background: #EEF4F9;
+$pastel: #F8F8F8;
+
+
+$theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary,
+    "success": $success,
+    "info": $info,
+    "warning": $warning,
+    "danger": $danger,
+    "light": $light,
+    "dark": $dark,
+    "lightgray": $lightgray,
+    "background": $background,
+    "pastel": $pastel,
+);
+
+
+$min-contrast-ratio:   1.8;
+// Botones
+$btn-font-weight: 700;
+$btn-border-radius: 0.5rem;
+$btn-font-size: 1rem;
+$btn-padding-x: 0.9rem;
+
+$btn-border-radius-sm: 0.5rem;
+$btn-padding-x-sm: 0.5rem;
+
+
+$h1-font-size: $font-size-base * 1.75;
+$h2-font-size: $font-size-base * 1.55;
+$h3-font-size: $font-size-base * 1.35;
+$h4-font-size: $font-size-base * 1.15;
+$h5-font-size: $font-size-base * 1;
+$h6-font-size: $font-size-base * 0.9;
+
+$h1-font-weight: 700;
+$h2-font-weight: 700;
+$h3-font-weight: 700;
+$h4-font-weight: 700;
+$h5-font-weight: 700;
+$h6-font-weight: 700;
+
+
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "backgrounds";
+
+
+
+

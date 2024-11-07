@@ -1,0 +1,49 @@
+{% extends 'core/usuarios/base_usuario.html' %}
+
+{% load core_extras %}
+
+{% block meta_tags %}
+    <title>Mi Cuenta: Preguntas Marcadas | Precavidos</title>
+    <meta name="title" content="Mi Cuenta: Preguntas Marcadas | Precavidos"/>
+    <meta name="description" content="Revisa las preguntas que has marcado"/>
+{% endblock %}
+
+{% block content %}
+    <div class="card border-0">
+        <div class="card-body">
+            <h2 class="fw-bold h5">Mis Preguntas Marcadas</h2>
+            <table class="table small table-bordered table-hover mt-3">
+                <tbody>
+                    {% for p in preguntas %}
+                        <tr>
+                            <th>{{ forloop.counter }}</th>  
+                            <td width="90%">
+                                {{ p.pregunta.enunciado|descripcion_corta }}
+                            </td>
+                            <td>
+                                <a target="_blank" href="{% url 'pregunta' p.pregunta.id_alterno %}" class="btn btn-info btn-xs" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" aria-label="Ver Pregunta">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-xs btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Acciones
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item formmodal"  href="javascript:" nhref="{{ request.path }}?action=desmarcar_pregunta&id={{ p.id }}"><i class="fas fa-trash text-danger"></i> Eliminar</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">No has marcado ninguna pregunta</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+ 
+{% endblock content %}

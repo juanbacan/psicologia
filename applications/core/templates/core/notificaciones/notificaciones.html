@@ -1,0 +1,51 @@
+
+{% extends 'layout/base_sidebar.html' %}
+
+{% load core_extras %}
+{% load static %}
+
+{% block extracss %}
+<style>
+</style>
+{% endblock %}
+
+{% block main %}
+    <h1 class="text-center h4">Notificaciones</h1>
+
+    {% for n in notificaciones %}
+        <div onclick="verNotificacion('{{ n.url }}', '{{ n.id }}', '{{ n.visto }}')" style="text-decoration: none; color: inherit; cursor: pointer;">
+            <div class="notificacion {% if n.visto %}notificacion-leida{% endif %} d-flex gap-2 align-items-center flex-wrap py-2">
+                <a href="{{ n.url }}" style="text-decoration: none; color: inherit;">
+                    <div class="d-flex gap-2 align-items-center">
+                        {% if n.usuario_notifica|get_photo_user %}
+                            <img src="{{ n.usuario_notifica|get_photo_user }}" class="rounded-circle" style="width:33px; height:33px" alt="Avatar">
+                        {% else %}
+                            <div class="rounded-circle d-flex justify-content-center align-items-center" style="width:33px; height:33px; background-color: #c7c7c7">
+                                <b>{{ n.usuario_notifica|get_first_name|slice:":1"|upper }}</b>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <p class="m-0">{{ n.mensaje_final }}</p>
+                            <div class="text-muted" style="font-size: 12px;">
+                                {{ n.get_hace_tiempo_string }}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="notificacion d-flex align-items-center justify-content-center gap-3 py-3 px-2">
+            <div style="font-size: 13px;">
+                No hay notificaciones
+            </div>
+        </div>
+    {% endfor %}
+    {% include 'partials/pagination.html' %}
+
+{% endblock %}
+
+
+{% block sidebar %}
+    {% comment %} {% include  'partials/sidebar_pregunta.html' %} {% endcomment %}
+{% endblock %}

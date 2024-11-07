@@ -1,0 +1,42 @@
+{% extends 'layout/base_admin.html' %}
+{% load static %}
+
+{% block extracss %}
+{% endblock extracss %}
+    
+{% block extra_content %}
+{% endblock extra_content %} 
+
+{% block sidebar %}
+  {% include 'layout/sidebar_admin.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <h1 class="h1"><i class="fa-solid fa-house"></i> Dashboard</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <a class="link3" href="{{ request.path }}?action=usuarios">
+            <div class="card border-0 mt-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="h3 mb-0">
+                            <i class="fa-solid text-primary fa-user"></i>
+                        </div>
+                        <div>
+                            <h2 class="h6 mb-0">Usuarios</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extrajs %}
+
+{% endblock %}

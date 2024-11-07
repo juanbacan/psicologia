@@ -1,0 +1,190 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        {% include 'layout/base_head.html' %}
+        {% block extracss %}{% endblock extracss %}
+        {% block modalcss %}{% endblock modalcss %}
+        
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/css/sidebar_admin.css' %}"> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.14.2/simple-lightbox.min.css" integrity="sha512-FaAQujRxLMvw+BkmGN3w7u9EdQQr1t0vQoY8KDh09+6SFaWSTe+KrT8oCWg25X91hytm5c5BTmiSGQejkraaZg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link href="/static/autocomplete_light/select2.css" media="screen" rel="stylesheet">
+    </head>
+
+    <body class="bg-background">
+        {% comment %} *********** Loading ************ {% endcomment %}
+        <div class="preloader-static" id="loading-static">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+        </div>
+        {% comment %} ******************************** {% endcomment %}
+
+        {% comment %} ******************* Toast Message ******************* {% endcomment %} 
+        <div class="toast-container position-fixed p-3" style="bottom: 50px; right: 15px;">
+            <div id="toastEditable" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header text-bg-primary small gap-1">
+                    <i class="fa-solid fa-circle-info"></i> &nbsp;
+                    <strong class="me-auto" id="toast-title"></strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body text-bg-light">
+                    <div id="toast-message"></div>
+                    <div class="mt-2">
+                        <button id="toast-action" onclick="" class="btn btn-xs btn-light"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% comment %} *********** Error Message ************ {% endcomment %}
+        <div class="preloader-static" id="error-static">
+            <div class="card" style="width: 400px">
+                <div class="card-header d-flex justify-content-between">
+                    <h5 id="error-title">Error</h5>
+                    <button type="button" class="btn-close" onclick="hideErrorMessage()"></button>
+                </div>
+                <div class="card-body">
+                    <div id="error-message"></div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary mt-3" onclick="hideErrorMessage()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% comment %} ******************************** {% endcomment %}
+        {% comment %} Modal para Edición de formularios {% endcomment %}
+        <div class="modal fade" tabindex="-1" aria-labelledby="ModalEdicion" aria-hidden="true" id="modalEdicion" data-bs-focus="false"></div>
+
+        {% comment %} Alertas y mensajes en el feed principal {% endcomment %} 
+
+        {% comment %} Contanido Principal {% endcomment %}
+
+        <div class="page-container">
+            <nav class="navbar navbar-expand-md bg-light">
+                <div class="container-fluid">
+                    <div class="d-flex gap-2">
+                        <button id="btn-change-sidebar" class="btn btn-toggle-sidebar" onclick="toggleSidebar()">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <a title="Inicio" class="navbar-brand h6 mb-0 d-flex align-items-center gap-1" href="{{ request.path }}">
+                            <img src="{% if application.logo %}{{ application.logo.url  }}{% endif %}" alt="Administración" height="30px">
+                        </a>
+                    </div>
+                    {% include 'layout/header_admin.html' %}
+                </div>
+            </nav>
+
+            <div class="main-content">
+                {% include 'layout/menu_mobile.html' %}
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        {% block sidebar_header %}
+                        {% endblock sidebar_header %}
+                    </div>
+                    <div class="sidebar-content">
+                        {% block sidebar%}
+                            {% include 'layout/sidebar_admin.html' %}
+                        {% endblock sidebar %}
+                    </div>
+                    <div class="sidebar-footer">
+                        {% block sidebar_footer %}
+                        {% endblock sidebar_footer %}
+                    </div>
+                </div>
+
+                <div class="content position-relative">
+                    <div class="content-header">
+                        {% block content_header %}
+                        {% endblock content_header %}
+                    </div>
+                    <div class="content-inner py-4 px-0 px-md-4 px-xl-5">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-2" role="alert">
+                                    {{ message | safe }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        {% block breadcrumb %}{% endblock %}
+                        {% block content %}{% endblock content %}
+                    </div>
+                    <div class="content-footer">
+                        {% block content_footer %}{% endblock content_footer %}
+                    </div>
+
+                    <div class="position-absolute bottom-50 start-0">
+                        <button id="btn-toggle-sidebar-content" class="btn-sidebar" onclick="toggleSidebar()">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <footer class="bg-light">
+        {% block javascript %}
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+            <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+            {% comment %} <script src="{% static 'bootstrap/bootstrap.bundle.min.js' %}"></script> {% endcomment %}
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script type="text/javascript" src="{% static 'assets/js/functions.js' %}"></script> 
+            <script type="text/javascript" src="{% static 'assets/js/sidebar.js' %}"></script> 
+            {% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/simplelightbox/2.14.2/simple-lightbox.min.js" integrity="sha512-/4kQE5RJQYHRhUiK+CZS8UhaJTnLmQkDuf8lOhiP2xLdjthA/rm0VqqWjcyelIx+NDyNHFmtqvuIgOFQnI34WA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> {% endcomment %}
+            
+            {% comment %} <script src="/static/admin/js/vendor/select2/select2.full.js"></script>
+            <script src="/static/autocomplete_light/autocomplete_light.js"></script>
+            <script src="/static/autocomplete_light/select2.js"></script>
+            <script src="/static/autocomplete_light/i18n/es.js"></script> {% endcomment %}
+            
+            {% block extrajs %}
+            {% endblock extrajs %}
+
+            {% block modaljs %}
+            {% endblock %}
+
+            <script>
+                const csrf_token = "{{ csrf_token|safe }}";
+                const group_name_webpush = "{{ application.group_name_webpush }}"
+                let resetNotificacionesV = true;
+                let num_notificaciones = parseInt("{{num_notificaciones}}") || 0;
+
+                async function resetNotificaciones() {
+                    if (resetNotificaciones && num_notificaciones > 0) {
+                        try{
+                            resetNotificacionesV = false;
+                            const notificaciones = document.getElementById('num_notificaciones');
+                            notificaciones.style.display = 'none';
+
+                            fetchRequest({
+                                url: `/core/api/?action=reset_notificacion`,
+                                method: 'POST',
+                                data: {user_id: '{{ request.user.id }}'},
+                            });
+
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+                }
+                async function verNotificacion(url, id, visto) {
+                    try{
+                        const nVisto = visto == 'True' ? true : false;
+                        if (!nVisto){
+                            fetchRequest({
+                                url: `/core/api/?action=ver_notificacion`,
+                                method: 'POST',
+                                data: {id: id},
+                            });
+                        }
+                        window.location.href = url;
+
+                    } catch(error){
+                        console.log(error);
+                    }
+                }
+            </script>
+        {% endblock javascript %}
+    </footer>
+</html>

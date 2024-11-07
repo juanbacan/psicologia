@@ -1,0 +1,232 @@
+{% extends 'layout/base_admin.html' %}
+
+{% block content %}
+    <form action="{{ request.path }}" id="form-curso" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if object %}
+            <input type="hidden" name="id" value="{{ object.id }}" />
+            <input type="hidden" name="action" value="edit_post" />
+        {% else %}
+            <input type="hidden" name="action" value="add_post" />
+        {% endif %}
+
+        <div class="row">
+            <div class="col-12 col-md-12">
+                <h1>{% if object %}Editar Post{% else %}Agregar Post{% endif %}</h1>
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger mt-3" id="error_{{ field.name }}">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="card border-0 mt-3">
+                    <div class="card-header text-bg-dark">
+                        <h5 class="card-title mb-0">Información del Post</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="row mt-3">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label form-label-text small fw-bold">{{ form.titulo.label }}</label>
+                                        {% include 'forms/fieldRender.html' with field=form.titulo %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label form-label-text small fw-bold">{{ form.slug.label }}</label>
+                                        {% include 'forms/fieldRender.html' with field=form.slug %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label form-label-text small fw-bold">{{ form.activo.label }}</label>
+                            {% include 'forms/fieldRender.html' with field=form.activo %}
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="form-label form-label-text small fw-bold">{{ form.categorias.label }}</label>
+                                    {% include 'forms/fieldRender.html' with field=form.categorias %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label form-label-text small fw-bold">{{ form.contenido.label }}</label>
+                            {% include 'forms/fieldRender.html' with field=form.contenido %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 mt-3">
+                    <div class="card-header text-bg-dark">
+                        <h4 class="card-title mb-0">Imágen</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <input type="file" required name="id_imagen_post" id="id_imagen_post" class="filepond" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="card border-0 mt-3">
+                    <div class="card-header text-bg-dark">
+                        <h4 class="card-title mb-0">SEO</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label form-label-text small fw-bold">{{ form.meta_title.label }}</label>
+                            {% include 'forms/fieldRender.html' with field=form.meta_title %}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label form-label-text small fw-bold">{{ form.meta_keywords.label }}</label>
+                            {% include 'forms/fieldRender.html' with field=form.meta_keywords %}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label form-label-text small fw-bold">{{ form.meta_description.label }}</label>
+                            {% include 'forms/fieldRender.html' with field=form.meta_description %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card bg-light mt-4">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                            <div class="d-grid d-md-flex gap-2">
+                                <input type="submit" class="btn btn-sm btn-primary" value="Guardar" name="_save" />
+                                <input type="submit" class="btn btn-sm btn-primary" value="Guardar y Añadir Otro" name="_addanother" />
+                                <input type="submit" class="btn btn-sm btn-primary" value="Guardar y Continuar Editando" name="_continue" />
+                            </div>
+                            {% if object and formdeleteaction %}
+                                <div class="d-grid d-md-flex gap-2">
+                                    <a href="javascript:" nhref="{{ request.path }}?action={{ formdeleteaction }}&id={{ object.id }}" class="btn btn-sm btn-danger formmodal">Eliminar</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+{% endblock %}
+
+
+{% block extrajs %}
+    {{ form.media }}
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+
+    <script>
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
+
+        const inputElement = document.querySelector('input[id="id_imagen_post"]');
+        
+        FilePond.registerPlugin(
+            FilePondPluginFileValidateType,
+            FilePondPluginImagePreview,
+        );
+
+        const htmlLabelIdle = `
+            <div">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 30px; color: #ccc;"></i>
+                <div style="font-size: 0.9rem!important; font-weight: bold;">Arrastra y suelta las imagen de la galería aquí</div>
+                <div class="btn btn-primary mt-3"><i class="fas fa-upload"></i> Seleccionar y Cargar</div>
+            </div>
+        `;
+        
+        {% if object %}
+            let files = [
+                {% for imagen in object.mis_imagenes %}
+                    {
+                        source: '{{ application.url }}{{ imagen.imagen.url }}',
+                    },
+                {% endfor %}
+            ];
+            console.log(files);
+        {% else %}
+            let files = [];
+        {% endif %}
+
+        const pond = FilePond.create(inputElement, {
+            labelIdle: htmlLabelIdle,
+            acceptedFileTypes: ['image/*'],
+
+            /*fileValidateTypeDetectType: (source, type) =>
+                new Promise((resolve, reject) => {
+                    // test if is xls file
+                    if (/\.webp$/.test(source.name)) {
+                        resolve('image/webp');
+                    } else {
+                        reject('Tipo de archivo no permitido');
+                    }
+                }),*/
+
+            allowMultiple: false,
+            storeAsFile: true,
+            allowReorder: true,
+            imagePreviewHeight: 100,
+            itemInsertLocation: 'after',
+            files: files,
+        });
+
+
+        function slugify(text) {
+            return text.toString().toLowerCase()
+                .replace(/\s+/g, '-')           // Replace spaces with -
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                .replace(/^-+/, '')             // Trim - from start of text
+                .replace(/-+$/, '');            // Trim - from end of text
+        }
+
+        function quitarTildes(texto) {
+            const mapaTildes = {
+                'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ñ': 'n',
+                'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U', 'Ñ': 'N', 
+            };
+        
+            return texto.replace(/[áéíóúñÁÉÍÓÚÑ]/g, function(letra) {
+                return mapaTildes[letra];
+            });
+        }
+
+        ready(function() {
+            console.log('ready');
+            let name = document.getElementById('id_titulo');
+            let slug = document.getElementById('id_slug');
+
+            name.addEventListener('input', function() {
+                slug.value = slugify(quitarTildes(name.value));
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block extracss %}
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet"/>
+
+    <style>
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .filepond--item {
+            width: calc(50% - 0.5em);
+        }
+
+        .filepond--root .filepond--drop-label {
+            height: 200px;
+        }
+    </style>
+{% endblock %}

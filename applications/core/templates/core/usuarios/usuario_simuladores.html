@@ -1,0 +1,45 @@
+{% extends 'core/usuarios/base_usuario.html' %}
+{% load core_extras %}
+
+{% block meta_tags %}
+    <title>Mi Cuenta: Simuladores Realizados | Simulador ANT</title>
+    <meta name="title" content="Mi Cuenta: Simuladores Realizados | ANT"/>
+    <meta name="description" content="Revisa tus simuladores básicos y avanzados realizados por ti"/>
+{% endblock %}
+
+{% block content %}
+    <div class="card border-0">
+        <div class="card-body">
+            <div class="table-responsive">
+                <h2 class="fw-bold h5">Últimos Simuladores Básicos realizados por tí</h2>
+                <table class="mt-4 small table table-bordered table-hover table-striped">
+                    <tbody>
+                        {% for s in simuladores_basicos %}
+                            <tr>
+                                <th>{{ forloop.counter }}</th>
+                                <td>{{ s.simulador.nombre }}</td>
+                                <td>{{ s.created|date:"d/m/Y" }}</td>
+                                <td><b>Tiempo: </b>{{ s.tiempo_utilizado|time_to_string }}</td>
+                                <td><b>Puntaje: </b>{{ s.puntaje }}</td>
+                                <td>
+                                    <a target="_blank" href="{% url 'revisar_simulador_basico' s.id %}" class="btn btn-info btn-xs" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" title="Ver Simulador">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a nhref="{{ request.path }}?action=delsimuladorbasico&id={{ s.id }}" href="javascript:" class="btn btn-danger btn-xs formmodal" data-bs-toggle="tooltip" data-bs-custom-class="custom-tooltip" title="Eliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                    
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <div class="alert alert-info">
+                                No has realizado ningún simulador básico. <a target="blank" href="{% url 'simulador' %}">Ver simuladores básicos</a>
+                            </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

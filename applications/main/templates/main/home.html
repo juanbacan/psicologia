@@ -1,0 +1,180 @@
+{% extends 'layout/base.html' %}
+{% load core_extras %}
+{% load static %}
+
+{% block content %}
+
+<div class="bg-background py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="">Hola! <br>Bienvenida<br><span="h1_title"></span></h1>
+                <p>Si estas buscando una terapia integral, completa y eficaz estás en el lugar correcto. Sigue 
+                    leyendo y descubre todo lo que tenemos para ofrecerte!
+                </p>
+                
+                <a class="btn btn-primary" href="#" title="Muéstrame">Muéstrame</a>
+            </div>
+            <div class="col-md-5">
+                <img src="{% static 'assets/images/home/1.png' %}" class="img-fluid" alt="Plenitud Psicologica">
+            </div>
+        </div>  
+    </div>
+</div>
+
+<div class="background-1">
+    <div class="wave-top-1"></div>
+    <div class="">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="text-center">Servicios</h2>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-md-6">
+                    <img src="{% static 'assets/images/home/2.png' %}" class="img-fluid" alt="Plenitud Psicologica">
+                </div>
+                <div class="col-md-6">
+                    <h3>Elegir a tu psicóloga es una decisión importante.</h3>
+                    <p>En esta sección descubrirás cómo son nuestros servicios:</p>
+                    <ul>
+                        <li>Cómo son las sesiones</li>
+                        <li>Los tipos de enfoques</li>
+                        <li>El precio por sesión</li>
+                        <li>y todo lo que incluye PsicoSalud para ti.🎁</li>
+                    </ul>
+
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-primary" href="#" title="Conoce más">Quiero saber más</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="wave-top-2"></div>
+</div>
+
+<div class="bg-background py-5">
+    <div class="container">
+        <h2 class="text-center">Recursos para ti</h2>
+        <p>En esta sección encontrarás información acerca de los malestares más comunes y sus síntomas.</p>
+
+        <div class="row gy-4">
+            {% for recurso in recursos %}
+                <div class="col-md-4">
+                    <div class="card border-0 text-bg-primary shadow" style="height: 90px;">
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <h3 class="card-title text-center my-auto">{{ recurso }}</h3>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            <a class="btn btn-outline-primary" href="#" title="No lo sé ...">No lo sé ...</a>
+        </div>
+    </div>  
+</div>      
+
+
+<div class="py-5">
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center">Explora Nuestro Blog</h2>
+                <p class="text-center">Inspiración y Conocimiento para tu Crecimiento Personal</p>
+            </div>
+        </div>
+
+        <div class="row gy-4">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    {% for post in posts %}
+                        <div class="swiper-slide">
+                            <a href="{% url 'blog:post' post.slug %}">
+                                <img class="imagen-product" src="{{ post.mi_imagen }}" alt="{{ post.titulo }}">
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extrajs %}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        let swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        
+        });
+    </script>
+
+{% endblock %}
+
+{% block extracss %}
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    
+    <style>
+        .divisor {
+            border-top: 4px solid;
+            color: #0d6efd;
+        }
+
+        .bg-background {
+            background-color: white!important;
+        }
+
+        .background-1 {
+            background-color: #f7e1e6;
+        }
+
+        .wave-top-1 {
+            background-image: url("{% static 'assets/images/waves/1.svg' %}");
+            background-size: 100% 90px;
+            background-repeat: no-repeat;
+            height: 90px;
+            transform: rotate(180deg);
+        }
+        .wave-top-2 {
+            background-image: url("{% static 'assets/images/waves/1.svg' %}");
+            background-size: 100% 90px;
+            background-repeat: no-repeat;
+            height: 90px;
+        }
+
+        .swiper-slide {
+            text-align: center;
+            font-size: 18px;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+      
+        .swiper-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+{% endblock %}

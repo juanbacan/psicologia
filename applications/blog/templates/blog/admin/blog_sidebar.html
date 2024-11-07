@@ -1,0 +1,29 @@
+{% with acc_id=7 current_heading="Blog" %}
+<div class="accordion-item">
+    <h2 class="accordion-header" id="accordion-header-{{ acc_id }}">
+        <button class="accordion-button {% if not current_heading == heading %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-content-{{ acc_id }}" aria-expanded="false" aria-controls="accordion-content-{{ acc_id }}">
+            <span><i class="fas fa-file-alt"></i> &nbsp;&nbsp; Blog</span>
+        </button>
+    </h2>
+    <div id="accordion-content-{{ acc_id }}" class="accordion-collapse collapse  {% if current_heading == heading %}show{% endif %}" aria-labelledby="accordion-header-{{ acc_id }}">
+        <div class="accordion-body p-0">
+            <div class="list-group list-group-flush">
+                {% with current_pageview="Categorias Post" %}
+                    <a href="{% url 'blog:admin_blog' %}?action=categorias_post" class="list-group-item list-group-item-action {% if current_pageview == pageview %}active{% endif %}">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-0"><i class="fa-regular fa-circle mx-2 fa-2xs"></i>  Categorias Posts</p>
+                        </div>
+                    </a>
+                {% endwith %}
+                {% with current_pageview="Posts" %}
+                    <a href="{% url 'blog:admin_blog' %}?action=posts" class="list-group-item list-group-item-action {% if current_pageview == pageview %}active{% endif %}">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-0"><i class="fa-regular fa-circle mx-2 fa-2xs"></i>  Posts</p>
+                        </div>
+                    </a>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}

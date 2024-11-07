@@ -1,0 +1,150 @@
+{% load static %}
+<html>
+  <head>
+  </head>
+  <body style="background-color: #f9f9f9;">
+    <table style="margin: 0 auto; width: 600px; padding: 20px;">
+        <tr>
+            <td>
+                <table style="background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%; padding: 20px;">
+                    <tr>
+                        <td>
+                            <div style="background-color: #ffffff;height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;">
+                                <div style="box-sizing: border-box; height: 100%; padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px; -moz-border-radius: 0px;"><!--<![endif]-->
+                                    <table style="font-family:arial,helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+                                        <tbody>
+                                        <tr>
+                                            <td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
+                                                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                    <tr>
+                                                    <td style="padding-right: 0px;padding-left: 0px;" align="center">
+                                                        {% if application.logo %}
+                                                            <img align="center" border="0" src="{{ application.url_safe }}{{ application.logo.url }}" alt="" title="" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 96px;" width="96" class="v-src-width v-src-max-width"/>
+                                                        {% endif %}
+                                                        <span style="font-weight: bold;">{{ application.titulo_sitio }}</span>
+                                                    </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                
+                            <div style="font-size:16px; font-family:Arial,sans-serif; text-align:center; color:#545454; margin:0; padding:20px 0">
+                                <h1>
+                                    {% block title %}{{ title }}{% endblock %}
+                                </h1>
+                            </div>
+                            
+                            <div style="font-size:16px; font-family:Arial,sans-serif; text-align:center; color:#757575; margin:0;">
+                                {% block message %}{{ message|safe }}{% endblock %}
+                            </div>
+
+                            <div align="center" style="margin-top: 20px;">
+                                <a href="{% block button_url %}
+                                    {% if button_url %}
+                                        {{ button_url }}    
+                                    {% else %}
+                                        {{ application.url }}
+                                    {% endif %}
+                                    {% endblock button_url %}" 
+                                    target="_blank" class="v-button v-size-width v-font-size" 
+                                    style="box-sizing: border-box;display: inline-block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; 
+                                    background-color: #0d6efe; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;border-top-width: 0px; border-top-style: dashed; border-top-color: #000000; border-left-width: 0px; border-left-style: dashed; border-left-color: #000000; border-right-width: 0px; border-right-style: dashed; border-right-color: #000000; border-bottom-width: 0px; border-bottom-style: dashed; border-bottom-color: #000000;font-size: 14px;">
+                                    <span style="display:block;padding:10px 20px;line-height:120%;">
+                                        <span style="line-height: 16.8px;">
+                                            <strong>
+                                                {% block button_text %}
+                                                    {% if button_text %}
+                                                        {{ button_text }}
+                                                    {% else %}
+                                                        Ir a {{ application.titulo_sitio }}
+                                                    {% endif %}
+                                                {% endblock button_text %}
+                                            </strong>
+                                        </span>
+                                    </span>
+                                </a>
+
+                                {% comment %} <div align="center" style="margin-top: 30px; margin-bottom: 30px;">
+                                    <div style="display: table; max-width:125px;">    
+                                        {% if application.facebook %}                                  
+                                            <table align="left" border="0" cellspacing="0" cellpadding="0" width="32" height="32" style="width: 32px !important;height: 32px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 10px">
+                                                <tbody>
+                                                    <tr style="vertical-align: top">
+                                                        <td align="left" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
+                                                            <a href="{{ application.facebook }}" title="Facebook" target="_blank">
+                                                                <img src="{{ application.url_safe }}{% static 'assets/icons/facebook.png' %}" alt="Facebook" title="Facebook" width="32" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        {% endif %}
+                                        
+                                        {% if application.instagram %}
+                                            <table align="left" border="0" cellspacing="0" cellpadding="0" width="32" height="32" style="width: 32px !important;height: 32px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 10px">
+                                                <tbody>
+                                                    <tr style="vertical-align: top">
+                                                        <td align="left" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
+                                                            <a href="{{ application.instagram }}" title="Instagram" target="_blank">
+                                                                <img src="{{ application.url_safe }}{% static 'assets/icons/instagram.png' %}" alt="Instagram" title="Instagram" width="32" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        {% endif %}
+                                        
+                                        {% if application.tiktok %}
+                                            <table align="left" border="0" cellspacing="0" cellpadding="0" width="32" height="32" style="width: 32px !important;height: 32px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 0px">
+                                                <tbody>
+                                                    <tr style="vertical-align: top">
+                                                        <td align="left" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
+                                                            <a href="{{ application.tiktok }}" title="TikTok" target="_blank">
+                                                                <img src="{{ application.url_safe }}{% static 'assets/icons/tiktok.png' %}" alt="TikTok" title="TikTok" width="32" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        {% endif %}
+                                        {% if application.youtube %}
+                                            <table align="left" border="0" cellspacing="0" cellpadding="0" width="32" height="32" style="width: 32px !important;height: 32px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 0px">
+                                                <tbody>
+                                                    <tr style="vertical-align: top">
+                                                        <td align="left" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
+                                                            <a href="{{ application.youtube }}" title="YouTube" target="_blank">
+                                                                <img src="{{ application.url_safe }}{% static 'assets/icons/youtube.png' %}" alt="YouTube" title="YouTube" width="32" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        {% endif %}
+                                        {% if application.linkedin %}
+                                            <table align="left" border="0" cellspacing="0" cellpadding="0" width="32" height="32" style="width: 32px !important;height: 32px !important;display: inline-block;border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;margin-right: 0px">
+                                                <tbody>
+                                                    <tr style="vertical-align: top">
+                                                        <td align="left" valign="middle" style="word-break: break-word;border-collapse: collapse !important;vertical-align: top">
+                                                            <a href="{{ application.linkedin }}" title="LinkedIn" target="_blank">
+                                                                <img src="{{ application.url_safe }}{% static 'assets/icons/linkedin.png' %}" alt="LinkedIn" title="LinkedIn" width="32" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important">
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        {% endif %}
+                                    </div>
+                                </div> {% endcomment %}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+  </body>
+</html>

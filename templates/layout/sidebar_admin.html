@@ -1,0 +1,38 @@
+<div class="px-2 mt-3">
+    <div class="accordion accordion-flush custom-accordion" id="accordion-sidebar-admin">
+        {% if request.user.is_superuser %}
+            {% with acc_id=1 current_heading="Aplicacion" %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="accordion-header-{{ acc_id }}">
+                        <button class="accordion-button {% if not current_heading == heading %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-content-{{ acc_id }}" aria-expanded="false" aria-controls="accordion-content-{{ acc_id }}">
+                            <span class=""><i class="fa-solid fa-earth-americas"></i> &nbsp;&nbsp; Aplicación</span>
+                        </button>
+                    </h2>
+                    <div id="accordion-content-{{ acc_id }}" class="accordion-collapse collapse {% if current_heading == heading %}show{% endif %}" aria-labelledby="accordion-header-{{ acc_id }}">
+                        <div class="accordion-body p-0">
+                            <div class="list-group list-group-flush">
+                                {% with current_pageview="Parámetros Principales" %}
+                                    <a href="{% url 'administracion' %}?action=parametros_app" class="list-group-item list-group-item-action {% if current_pageview == pageview %}active{% endif %}">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <p class="mb-0"><i class="fa-regular fa-circle mx-2 fa-2xs"></i> Parámetros Principales</p>
+                                        </div>
+                                    </a>
+                                {% endwith %}
+                                {% with current_pageview="Lista de Usuarios" %}
+                                    <a href="{% url 'administracion' %}?action=usuarios" class="list-group-item list-group-item-action {% if current_pageview == pageview %}active{% endif %}">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <p class="mb-0"><i class="fa-regular fa-circle mx-2 fa-2xs"></i> Lista de Usuarios</p>
+                                        </div>
+                                    </a>
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endwith %}
+        
+            {% include 'blog/admin/blog_sidebar.html' %}
+
+        {% endif %}
+    </div>
+</div>

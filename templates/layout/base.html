@@ -1,0 +1,276 @@
+{% load static %}
+{% load core_extras %}
+{% load pwa %}
+{% load webpush_notifications %}
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+
+        {% comment %} Verificacion de Facebook {% endcomment %}
+        {% comment %} <meta name="facebook-domain-verification" content="6eoe57s1xtul14z6qqxi0aagaaq82o" /> {% endcomment %}
+
+        {% block meta_tags %}
+            <title>{{ application.title|default:"" }}{{ flatpage.title|default:"" }}</title>
+            <meta name="title" content="{{ application.meta_title }}"/>
+            <meta name="description" content="{{ application.meta_description }}"/>
+        {% endblock %}
+
+        {% if application.favicon %}
+            <link rel="shortcut icon" href="{{ application.url }}{{ application.favicon.url }}">
+        {% endif %}
+
+        <meta name="keywords" content="{{ application.key_words|default_if_none:"" }}"/>
+        <meta name="robots" content="index, follow"/>
+        <meta name="language" content="Spanish"/>
+
+        <meta property="og:site_name" content="{{ application.titulo_sitio }}"/>
+
+        <meta property="og:type" content="website"/>
+        <meta property="og:url" content="{{ application.url_safe }}{{ request.path }}">
+
+        {% block meta_social %}
+            <meta property="og:title" content="{{ application.meta_title }}">
+            <meta property="og:description" content="{{ application.meta_description }}">
+            {% if application.social_images %}
+                <meta property="og:image" content="{{ application.url_safe }}{{ application.social_images.url }}"/>
+                <meta property="twitter:image" content="{{ application.url_safe }}{{ application.social_images.url }}">
+            {% endif %}
+        {% endblock %}
+
+
+        <meta property="twitter:url" content="{{ application.url_safe }}{{ request.path }}">
+        <meta property="twitter:title" content="{{ application.meta_title }}">
+        <meta property="twitter:description" content="{{ application.meta_description }}"> 
+        <meta property="twitter:card" content="summary_large_image">
+
+        <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/styles.css' %}"> 
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+
+        {% comment %} Google Analytics and Google Ads {% endcomment %}
+        {% comment %} {% if not request.user.premium %}
+            <script  async data-ad-client="ca-pub-4779141162178342" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        {% endif %}
+        {% endcomment %}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5146986441186346" crossorigin="anonymous"></script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SFDLJQNMS8"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-SFDLJQNMS8');
+        </script>
+
+        {% comment %} Webpush Notifications and PWA {% endcomment %}
+
+        {% comment %} Google One Tap {% endcomment %}
+        {% comment %} {% if not request.user.is_authenticated %}
+            <script src="https://accounts.google.com/gsi/client" async defer></script>
+        {% endif %} {% endcomment %}
+
+        {% block extracss %}{% endblock extracss %}
+        {% block modalcss %}{% endblock modalcss %}
+
+        {% if webpush_habilitado %}
+            {% webpush_header %}
+            {% progressive_web_app_meta %}
+        {% endif %}
+    </head>
+
+    <body>
+        {% comment %} {% webpush_button with_class="btn btn-primary" %} {% endcomment %}
+
+        {% comment %} *********** Loading ************ {% endcomment %}
+        <div class="preloader-static" id="loading-static" style="display: none;">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+        </div>
+        {% comment %} ******************************** {% endcomment %}
+
+
+        {% comment %} *********** Error Message ************ {% endcomment %}
+        <div class="preloader-static" id="error-static" style="display: none;">
+            <div class="card" style="width: 400px">
+                <div class="card-header d-flex justify-content-between">
+                    <h5 id="error-title">Error</h5>
+                    <button type="button" class="btn-close" onclick="hideErrorMessage()"></button>
+                </div>
+                <div class="card-body">
+                    <div id="error-message"></div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary mt-3" onclick="hideErrorMessage()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% comment %} ******************************** {% endcomment %}
+        {% if not not_alerts %}
+            {% if alertas %}
+                {% for alerta in alertas %}
+                    <div class="alert alert-{{ alerta.color|default:"primary" }} fade show m-0 alert-dismissible" role="alert">
+                        <div class="container">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                <div>
+                                    <div class="alerta">{{ alerta.descripcion|safe }}</div>
+                                </div>
+                                <div>
+                                    <a class="btn btn-sm btn-{{ alerta.color|default:"primary" }}" href="{{ alerta.url }}">{{ alerta.titulo }} <i class="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+
+        {% comment %} <div class="container-fluid bg-dark text-white">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-1">
+                <div class="small gap-3 d-flex align-items-center">
+                    <div class="small">
+                        <i class="fa-solid fa-mobile-screen-button"></i> <a target="_blank" href="https://api.whatsapp.com/send/?phone={{ application.celular_contacto }}&text=Hola%21+Estoy+interesad@+en+obtener+un+curso+de+{{ application.titulo_sitio }}.&type=phone_number&app_absent=0" class="text-white text-decoration-none">{{ application.celular_contacto }}</a>
+                    </div>
+                    <div class="small">
+                        <i class="fa-solid fa-envelope"></i> <a href="mailto:{{ application.email_contacto }}" class="text-white text-decoration-none">{{ application.email_contacto }}</a>
+                    </div>
+                </div>
+                <div class="d-flex small gap-2">
+                    <a href="{{ application.facebook }}" target="_blank" class="text-white"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="{{ application.instagram }}" target="_blank" class="text-white"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="{{ application.tiktok }}" target="_blank" class="text-white"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="{{ application.youtube }}" target="_blank" class="text-white"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="{{ application.linkedin }}" target="_blank" class="text-white"><i class="fa-brands fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div> {% endcomment %}
+        <nav class="navbar navbar-expand-md bg-light">
+            <div class="container-fluid">
+                <a title="Inicio" class="navbar-brand h6 mb-0 d-flex align-items-center gap-1" href="/">
+                    
+                    <img src="{% if application.logo %}{{ application.logo.url  }}{% endif %}" alt="Home" height="30px">
+                </a>
+                {% include 'layout/header.html' %}
+            </div>
+        </nav>
+
+
+        {% comment %} Modal para Edición de formularios {% endcomment %}
+        <div class="modal fade" tabindex="-1" aria-labelledby="ModalEdicion" aria-hidden="true" id="modalEdicion" data-bs-focus="false"></div>
+
+        {% comment %} Alertas y mensajes en el feed principal {% endcomment %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-4" role="alert">
+                    {{ message | safe }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% comment %} Google One Tap {% endcomment %}
+        {% comment %} {% if not request.user.is_authenticated %}
+            <div id="g_id_onload"
+                data-client_id="1086510543703-3kiq7foihgi11349p78s1dc34el33ad7.apps.googleusercontent.com"
+                data-context="signin"
+                data-login_uri="https://precavidos.com/one_tap_google_login/"
+                data-auto_select="true"
+                data-itp_support="true">
+            </div>
+        {% endif %} {% endcomment %}
+
+        {% comment %} Menu para Mobiles {% endcomment %}
+        {% include 'layout/menu_mobile.html' %}
+
+        {% comment %} Botón Whatsapp {% endcomment %}
+        <a target="_blank" class="link2 btn-whatsapp shadow-lg bg-success" href="https://api.whatsapp.com/send/?phone={{ application.celular_contacto }}&amp;text=Hola%21+Estoy+interesad@+en+obtener+un+curso+de+{{ application.titulo_sitio }}.&amp;type=phone_number&amp;app_absent=0">
+            <i class="fab fa-whatsapp text-white" style="font-size: 2.5rem;"></i>
+        </a>
+
+        {% comment %} Contanido Principal {% endcomment %}
+        {% block content %}
+        {% endblock content %}
+
+        {% comment %} <div class="position-absolute top-3 end-0 p-3 "> {% endcomment %}
+        <div class="position-absolute bottom-0 start-0 p-3">
+            <div id="customToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong id="custom-toast-title" class="me-auto"></strong>
+                    <small class="text-muted">justo ahora</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+                </div>
+                <div id="custom-toast-message" class="toast-body">
+                </div>
+            </div>
+        </div>
+        
+        {% comment %} Páginas Estáticas {% endcomment %}
+        {% if flatpage %}
+            <div class="bg-background py-5">
+                <div class="container">
+                    {{ flatpage.content }}
+                </div>
+            </div>
+        {% endif %}
+
+    </body>
+
+    <footer class="bg-light">
+
+        {% include 'layout/footer.html' %}
+
+        {% block javascript %}
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+            <script type="text/javascript" src="{% static 'assets/js/functions.js' %}"></script>
+            
+            {% block extrajs %}
+            {% endblock extrajs %}
+            
+            <script>
+                const csrf_token = "{{ csrf_token|safe }}";
+                const group_name_webpush = "{{ application.group_name_webpush }}"
+                let resetNotificacionesV = true;
+                let num_notificaciones = parseInt("{{num_notificaciones}}") || 0;
+
+                async function resetNotificaciones() {
+                    if (resetNotificaciones && num_notificaciones > 0) {
+                        try{
+                            resetNotificacionesV = false;
+                            const notificaciones = document.getElementById('num_notificaciones');
+                            notificaciones.style.display = 'none';
+                            fetchRequest({
+                                url: `/core/api/?action=reset_notificacion`,
+                                method: 'POST',
+                                data: {user_id: '{{ request.user.id }}'},
+                            });
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+                }
+                async function verNotificacion(url, id, visto) {
+                    try{
+                        const nVisto = visto == 'True' ? true : false;
+                        if (!nVisto){
+                            fetchRequest({
+                                url: `/core/api/?action=ver_notificacion`,
+                                method: 'POST',
+                                data: {id: id},
+                            });
+                        }
+                        window.location.href = url;
+                    } catch(error){
+                        console.log(error);
+                    }
+                }
+            </script>
+
+            {% block modaljs %}
+            {% endblock modaljs %}
+        {% endblock javascript %}
+    </footer>
+</html>

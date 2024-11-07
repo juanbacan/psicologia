@@ -1,0 +1,49 @@
+{% extends 'layout/base_admin.html' %}
+{% comment %} {% extends "crudbuilder/base.html" %} {% endcomment %}
+{% comment %} {% load crudbuilder %} {% endcomment %}
+{% load render_table from django_tables2 %}
+
+{% comment %} {% block breadcrumb %}
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="active">{{ pluralized_model_name|title }}</li>
+		</ol>
+	</nav>
+{% endblock %} {% endcomment %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<div>
+				  	<h1 class="mb-0"><i class="fa-solid fa-heart"></i> {{ pluralized_model_name|title }}</h1>
+				</div>
+				<div>
+					<a class="btn btn-sm btn-dark" href="{% url app_label|add:'-'|add:custom_postfix_url|add:'-create' %}"><i class="fa-solid fa-circle-plus"></i> Agregar {{actual_model_name|title}}</a>
+				</div>
+			</div>
+
+			<div style="max-width: 500px">
+				<form method="GET" role="form" action=".">
+					<div class="input-group mb-3">
+					<input type="text" id="search" name="search" value="{{ request.GET.search }}" class="form-control" placeholder="Buscar {{ actual_model_name }} ...">
+					<button type="submit" class="btn btn-primary btn-sm">Buscar <i class="fa-solid fa-magnifying-glass"></i></button>
+					</div>
+				</form>
+			</div>
+
+
+			{% render_table table_objects "crudbuilder/widgets/tables/tables.html" %}
+		</div>
+	</div>
+
+{% comment %}
+	<b>APP :</b> {{app_label}}<br/>
+	<b>MODEL : </b>{{actual_model_name}}<br/>
+	<b>PLURIZED MODEL :</b> {{pluralized_model_name}}<br/>
+
+	<h4>Using normal queryset</h4>
+	{{object_list}}
+{% endcomment %}
+
+{% endblock %}

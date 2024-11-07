@@ -1,0 +1,108 @@
+{% extends 'layout/base_perfil.html' %}
+{% load static %}
+{% load core_extras %}
+
+{% block sidebar %}
+    <div class="card border-0 rounded-0 overflow-hidden">
+        <div style="background-color: rgba(85,110,230,.25)!important">
+            <div class="row">
+                <div class="col-7">
+                    <div class="text-primary p-3">
+                        <h5 class="text-primary">Bienvenido</h5>
+                        <p>@{{ user.username }}</p>
+                    </div>
+                </div>
+                <div class="col-5 align-self-end">
+                    <img src="{% static 'assets/images/perfil/profile-img.png' %}" alt="perfil de usuario" class="img-fluid">
+                </div>
+            </div>
+        </div>
+        <div class="card-body pt-0">
+            <div class="row">
+                <div class="col-12">
+                    <div class="avatar-md mb-2" style="margin-top: -26px;">
+                        {% avatar_small request.user 55 %}
+                    </div>
+                </div>
+                <h5 class="h6 text-truncate">{{ request.user|get_nombre_completo }}</h5>
+                <div>
+                    {% if request.user.es_profesor %}
+                        <span class="badge text-bg-secondary"><i class="fa-solid fa-graduation-cap"></i> Profesor</span>
+                    {% else %}
+                        <span class="badge text-bg-secondary"><i class="fa-solid fa-graduation-cap"></i> Estudiante</span>
+                    {% endif %}
+                    {% if user.premium %}
+                        <span class="premium badge"><i class="fa-solid fa-bolt"></i> Premium</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="list-group">
+
+        {% with pageview="perfil" %}
+            <a href="{{ request.path }}?tp={{ pageview }}#contenido" class="list-group-item list-group-item-action {% if tp == pageview %}bg-primary{% endif %}" aria-current="true">
+                <div class="row py-1">
+                    <div class="col-1">
+                        <i class="fa-solid fa-user fa-lg {% if tp == pageview %}text-white{% else %}text-primary{% endif %}"></i>
+                    </div>
+                    <div class="col-11 {% if tp == pageview %}text-white{% else %}text-dark{% endif %}">
+                        Mi cuenta
+                    </div>
+                </div>
+            </a>
+        {% endwith %}
+        {% with pageview="simuladores" %}
+            <a href="{{ request.path }}?tp={{ pageview }}#contenido" class="list-group-item list-group-item-action {% if tp == pageview %}bg-primary{% endif %}" aria-current="true">
+                <div class="row py-1">
+                    <div class="col-1">
+                        <i class="fa-solid fa-laptop fa-lg {% if tp == pageview %}text-white{% else %}text-primary{% endif %}"></i>
+                    </div>
+                    <div class="col-11 {% if tp == pageview %}text-white{% else %}text-dark{% endif %}">
+                        Mis Simuladores
+                    </div>
+                </div>
+            </a>
+        {% endwith %}
+        {% with pageview="preguntas_marcadas" %}
+            <a href="{{ request.path }}?tp={{ pageview }}#contenido" class="list-group-item list-group-item-action {% if tp == pageview %}bg-primary{% endif %}" aria-current="true">
+                <div class="row py-1">
+                    <div class="col-1">
+                        <i class="fa-solid fa-bookmark fa-lg {% if tp == pageview %}text-white{% else %}text-primary{% endif %}"></i>
+                    </div>
+                    <div class="col-11 {% if tp == pageview %}text-white{% else %}text-dark{% endif %}">
+                        Preguntas Marcadas
+                    </div>
+                </div>
+            </a>
+        {% endwith %}
+
+        {% if request.user.is_superuser %}
+            <a href="{% url 'administracion' %}" class="list-group-item list-group-item-action"> 
+                <div class="row py-1">
+                    <div class="col-1">
+                        <i class="fa-solid fa-sliders text-primary"></i>
+                    </div>
+                    <div class="col-11">
+                        Administración
+                    </div>
+                </div>
+            </a>
+        {% endif %}
+    </div>
+{% endblock sidebar %}
+
+{% block extrajs %}
+    {% block extra_js %}{% endblock %}
+{% endblock %}
+
+{% block extracss %}
+    {% block extra_css %}{% endblock %}
+    <style>
+        .premium {
+            background-color: #FFA4021A;
+            color: #FFA402;
+        }
+    </style>
+{% endblock %}

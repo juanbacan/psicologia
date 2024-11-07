@@ -1,0 +1,115 @@
+{% extends 'forms/formModal.html' %}
+{% block extrajs %}
+    <script>
+        ready(function(){
+            const inputElement = document.querySelector('input[id="id_imagen"]');
+        
+            FilePond.registerPlugin(
+                FilePondPluginFileValidateType,
+                FilePondPluginImagePreview,
+            );
+
+            const htmlLabelIdle = `
+                <div>
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 30px; color: #ccc;"></i>
+                    <div style="font-size: 0.8rem!important;">Arrastra y suelta tu foto aquí</div>
+                </div>
+            `;
+            
+            {% if request.user.imagen %}
+                let files = [
+                    {source: '{{ application.url }}{{ request.user.imagen.url }}'},
+                ];
+            {% else %}
+                let files = [];
+            {% endif %}
+
+            const pond = FilePond.create(inputElement, {
+                labelIdle: htmlLabelIdle,
+                acceptedFileTypes: ['image/*'],
+                allowMultiple: false,
+                storeAsFile: true,
+                allowReorder: true,
+                imagePreviewHeight: 100,
+                itemInsertLocation: 'after',
+                files: files,
+            });
+
+            {% if request.user.es_profesor %}
+
+                {% if request.user.mi_perfil_profesor.fondo_horizontal %}
+                    let filesFondoHorizontal = [
+                        {source: '{{ application.url }}{{ request.user.mi_perfil_profesor.fondo_horizontal.url }}'},
+                    ];
+                {% else %}
+                    let filesFondoHorizontal = [];
+                {% endif %}
+
+                {% if request.user.mi_perfil_profesor.fondo_cuadrado %}
+                    let filesFondoCuadrado = [
+                        {source: '{{ application.url }}{{ request.user.mi_perfil_profesor.fondo_cuadrado.url }}'},
+                    ];
+                {% else %}
+                    let filesFondoCuadrado = [];
+                {% endif %}
+
+                const inputElementFondoHorizontal = document.querySelector('input[id="id_fondo_horizontal"]');
+                const pondFondoHorizontal = FilePond.create(inputElementFondoHorizontal, {
+                    labelIdle: htmlLabelIdle,
+                    acceptedFileTypes: ['image/*'],
+                    allowMultiple: false,
+                    storeAsFile: true,
+                    allowReorder: true,
+                    imagePreviewHeight: 100,
+                    itemInsertLocation: 'after',
+                    files : filesFondoHorizontal,
+                });
+
+                const inputElementFondoCuadrado = document.querySelector('input[id="id_fondo_cuadrado"]');
+                const pondFondoCuadrado = FilePond.create(inputElementFondoCuadrado, {
+                    labelIdle: htmlLabelIdle,
+                    acceptedFileTypes: ['image/*'],
+                    allowMultiple: false,
+                    storeAsFile: true,
+                    allowReorder: true,
+                    imagePreviewHeight: 100,
+                    itemInsertLocation: 'after',
+                    files : filesFondoCuadrado,
+                });
+
+            {% endif %}
+
+        });
+    </script>
+
+    <style>
+  
+    </style>
+
+{% endblock %}
+
+{% block formextra %}
+    {% if request.user.es_profesor %}
+        <label class="form-label form-label-text small w-100" style="font-weight: 500;">Fondo Horizontal:</label>
+        <div class="card border-0 mx-auto" style="max-width: 300px;">
+            <div class="card-body">
+                <input type="file" name="fondo_horizontal" id="id_fondo_horizontal" class="filepond" accept="image/*">
+            </div>
+        </div>
+
+        <label class="form-label form-label-text small w-100" style="font-weight: 500;">Fondo Cuadrado:</label>
+        <div class="card border-0 mx-auto" style="max-width: 300px;">
+            <div class="card-body">
+                <input type="file" name="fondo_cuadrado" id="id_fondo_cuadrado" class="filepond" accept="image/*">
+            </div>
+        </div>
+    {% endif %}
+
+    <label class="form-label form-label-text small w-100" style="font-weight: 500;">Foto Perfil:</label>
+    <div class="card border-0 mx-auto" style="max-width: 300px;">
+        <div class="card-body">
+            <input type="file" name="imagen" id="id_imagen" class="filepond" accept="image/*">
+        </div>
+    </div>
+{% endblock %}
+

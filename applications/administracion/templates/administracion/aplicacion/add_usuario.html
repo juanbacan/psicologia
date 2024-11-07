@@ -1,0 +1,32 @@
+{% extends 'forms/formAdmin.html' %}
+
+
+{% block title %}Agregar Usuario{% endblock title %}
+
+{% block extrajs %}
+    <script>
+        ready(function(){
+
+            function check_id_generar_usuario(){
+                let id_generar_usuario = document.getElementById('id_generar_usuario');
+                if(id_generar_usuario.checked){
+                    document.getElementById('fieldset_username').style.display = 'none';
+                    document.getElementById('id_username').required = false;
+                }else{
+                    document.getElementById('fieldset_username').style.display = 'block';
+                    document.getElementById('id_usuario').required = true;
+                }
+            }
+            
+            let id_generar_usuario = document.getElementById('id_generar_usuario');
+            id_generar_usuario.addEventListener('change', check_id_generar_usuario);
+
+            check_id_generar_usuario();
+        });
+
+    </script>
+{% endblock %}
+
+{% block form_suffix %}
+
+{% endblock %}

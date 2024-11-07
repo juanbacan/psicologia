@@ -1,0 +1,107 @@
+
+{% extends 'layout/base_admin.html' %}
+
+{% block breadcrumb %}
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="{% url app_label|add:'-'|add:custom_postfix_url|add:'-list' %}">{{pluralized_model_name|title}}</a></li>
+			<li class="breadcrumb-item active" aria-current="page">Crear {{actual_model_name}}</li>
+		</ol>
+	</nav>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="mb-0">{{ title }}</h1>
+            </div>
+        </div>
+
+        <div class="card border-0">
+            <div class="card-body">
+                <form method="POST" action="{{ request.path }}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="{% block action %}{{ action }}{% endblock %}" />
+
+                    {% if object %}
+                        <input type="hidden" name="id" value="{{ object.id }}" />
+                    {% endif %}
+
+                    {% block form_preffix %}{% endblock %}
+                    
+                    {% include 'forms/form.html' %}
+
+                    {% block form_suffix %}{% endblock %}
+
+                    <div class="card bg-light mt-4">
+                        <div class="card-body">
+                            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                                <div class="d-grid d-md-flex gap-2">
+                                    <input type="submit" class="btn btn-sm btn-primary" value="Guardar" />
+                                    {% comment %} <input type="submit" class="btn btn-sm btn-primary" value="Guardar y Añadir Otro" name="_addanother" />
+                                    <input type="submit" class="btn btn-sm btn-primary" value="Guardar y Continuar Editando" name="_continue" /> {% endcomment %}
+                                </div>
+                                {% comment %} {% if object and formdeleteaction %}
+                                    <div class="d-grid d-md-flex gap-2">
+                                        <a href="javascript:" nhref="{{ request.path }}?action={{ formdeleteaction }}&id={{ object.id }}" class="btn btn-sm btn-danger formmodal">Eliminar</a>
+                                    </div>
+                                {% endif %} {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extracss %}
+  <style>
+
+  </style>
+{% endblock %}
+
+{% block extrajs %}
+    <script>
+        function slugify(text) {
+            return text.toString().toLowerCase()
+                .replace(/\s+/g, '-')           // Replace spaces with -
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                .replace(/^-+/, '')             // Trim - from start of text
+                .replace(/-+$/, '');            // Trim - from end of text
+        }
+
+        function quitarTildes(texto) {
+            const mapaTildes = {
+                'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u', 'ñ': 'n',
+                'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U', 'Ñ': 'N', 
+            };
+        
+            return texto.replace(/[áéíóúñÁÉÍÓÚÑ]/g, function(letra) {
+                return mapaTildes[letra];
+            });
+        }
+
+        ready(function() {
+            {% if prepopulated_fields %}
+                
+                {% for item in prepopulated_fields %}
+                    let {{ item.field }} = document.getElementById('id_{{ item.field }}');
+                    let {{ item.source }} = document.getElementById('id_{{ item.source }}');
+
+                    {{ item.source }}.addEventListener('input', function() {
+                        {{ item.field }}.value = slugify(quitarTildes({{ item.source }}.value));
+                    });
+                {% endfor %}
+            {% endif %}
+        });
+
+    </script>
+{% endblock %}
+

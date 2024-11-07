@@ -1,0 +1,131 @@
+{% extends 'layout/base_admin.html' %}
+
+{% block content %}
+  
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="mb-0"><i class="fa-solid fa-users"></i> Lista de Usuarios</h1>
+        </div>
+        <div>
+          <a class="btn btn-sm btn-dark" href="{% url 'administracion' %}?action=add_usuario">
+            <i class="fa-solid fa-circle-plus"></i> Agregar Usuario
+          </a>
+        </div>
+      </div>
+
+      <div style="max-width: 500px">
+        <form method="GET">
+            <div class="input-group mb-3">
+              <input type="text" id="kword" name="kword" value="{{ request.GET.kword }}" class="form-control" placeholder="Buscar usuario ...">
+              <input type="hidden" name="action" value="usuarios">
+              <button type="submit" class="btn btn-primary btn-sm">Buscar <i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </form>
+      </div>
+      {% if request.GET.kword %}
+			<div class="d-flex justify-content-between mt-3">
+        <p class="fw-bold">Se encontraron {{ page_obj.paginator.count }} usuarios</p>
+        <p>Página <span class="fw-bold">{{ page_obj.number }}</span> de <span class="fw-bold">{{ page_obj.paginator.num_pages }}</span></p>
+      </div>
+      {% endif %}
+
+      <div class="card border-0">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover small">
+              <thead class="table-primary">
+                <tr class="fw-bold">
+                  <td>#</td>
+                  <td>Nombres</td>
+                  <td>Apellidos</td>
+                  <td>Username</td>
+                  <td>Email</td>
+                  <td width="30%%">Perfiles</td>
+                  <td>Acciones</td>
+                </tr>
+              </thead>
+              <tbody>
+                {% for usuario in page_obj %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ usuario.first_name }}</td>
+                    <td>{{ usuario.last_name }}</td>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.mi_email }}</td>
+                    <td>
+                      {% comment %} {% for grupo in usuario.groups.all %}
+                          <span class="badge bg-secondary">{{ grupo }}</span>
+                      {% endfor %} {% endcomment %}
+                      {% if usuario.is_superuser %}
+                        <span class="badge bg-danger">Administrador</span>
+                      {% endif %}
+                      {% if usuario.es_profesor %}
+                        <span class="badge bg-success">Profesor</span>
+                      {% else %}
+                        <span class="badge bg-warning">Estudiante</span>
+                      {% endif %}
+
+                    </td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-info btn-xs dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Acciones
+                        </button>
+                        <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="{% url 'administracion' %}?action=edit_usuario&id={{ usuario.id }}"><i class="fa-solid fa-pencil"></i> Editar</a></li>
+                          <li><a href="javascript:" class="dropdown-item formmodal" nhref="{% url 'administracion' %}?action=del_usuario&id={{ usuario.id }}"><i class="fa-solid fa-trash"></i> Desactivar</a></li>
+                          <li><a href="javascript:" class="dropdown-item formmodal" nhref="{% url 'administracion' %}?action=edit_grupos_usuario&id={{ usuario.id }}"><i class="fa-solid fa-users"></i> Editar Perfiles</a></li>
+                          <li><a href="javascript:" class="dropdown-item formmodal" nhref="{% url 'administracion' %}?action=reset_password&id={{ usuario.id }}"><i class="fa-solid fa-key"></i> Resetear Contraseña</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% include 'partials/pagination.html' %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block extracss %}
+  <style>
+
+  </style>
+{% endblock %}
+
+{% block extrajs %}
+  <script>
+    function ingresarUsuario(id){
+      bloqueoInterfaz(true);
+      $.ajax({
+        url: '{{ request.path }}?action=ingresar_usuario&id=' + id,
+        type: 'GET',
+        success: function(data){
+          desbloqueoInterfaz();
+          if (data.result !== 'ok') {
+            showErrorMessage(data.message || 'Error al ingresar como este usuario');
+            return;
+          }
+          const sessionId = data.resp.sessionId;
+          localStorage.removeItem('sessionid');
+          localStorage.setItem('sessionid', data.sessionid);
+          window.location.href = '/';
+            
+        },
+        error: function(data){
+          desbloqueoInterfaz();
+          showErrorMessage('Error al ingresar como este usuario');
+        }
+      });
+    }
+  </script>
+
+{% endblock %}
+

@@ -1,0 +1,101 @@
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    {% comment %} <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+    </ul> {% endcomment %}
+
+    <ul class="navbar-nav mb-2 mb-lg-0">
+        {% comment %} <li>
+            <a class="nav-link {% if request.path == '/simuladores/' %}active text-primary{% endif %} align-items-center d-flex gap-1" aria-current="page" href="{% url 'exani:simuladores' %}"><i class="fa-solid fa-laptop"></i> Simuladores </a>
+        </li> {% endcomment %}
+        {% comment %} <li class="nav-item">
+            <a class="nav-link {% if request.path == '/test/lista/' %}active text-primary{% endif %} align-items-center d-flex gap-1" aria-current="page" href="{% url 'testr_lista' %}"><i class="fa-solid fa-gamepad"></i> Actividades</a>
+        </li> {% endcomment %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle align-items-center d-flex gap-1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-table-list"></i> Categorias
+            </a>
+            <ul class="dropdown-menu">
+                {% for c in categorias_menu %}
+                    <li>
+                        <a class="dropdown-item" 
+                            href="{% url 'preguntas_por_categoria' c.alias %}" title="{{ application.titulo_sitio }} Categoria {{ c.nombre }}"
+                        >
+                            {{ c.nombre }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% comment %} </li><a class="nav-link {% if request.path == '/trabaja_con_nosotros/' %}active text-primary{% endif %} align-items-center d-flex gap-1" aria-current="page" href="{% url 'main:trabaja_con_nosotros' %}"><i class="fa-solid fa-briefcase"></i> Trabaja con Nosotros</a> {% endcomment %}
+        </li>
+        {% comment %} <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Recursos
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'testr_lista' %}" title="Tests Actividades Precavidos">
+                    <i class="fa-solid fa-gamepad"></i>
+                    Listado de Tests
+                </a></li>
+                <li><a class="dropdown-item" href="{% url 'testr' %}?action=crear_test" title="Crea tu propio test">
+                    <i class="fa-solid fa-puzzle-piece"></i>
+                    Crear Test
+                </a></li>
+                <li><a class="dropdown-item" href="{% url 'simulador_personalizado' %}" title="Simulador Personalizado Precavidos">
+                    <i class="fa-solid fa-laptop"></i>
+                    Simulador Personalizado 
+                </a></li>
+            </ul>
+        </li> {% endcomment %}
+        <li class="nav-item">
+            <div class="d-none d-sm-block form-select-custom" data-selected-value="">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="fontuser">
+                        <input class="form-select-custom-input" id="query" name="query" value="{{ request.GET.kword }}" type="text" placeholder="Buscar en {{ application.titulo_sitio }}" />
+                        <input type="hidden" name="action" value="buscar_curso">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <ul class="form-select-custom-options"></ul>
+                </form>
+            </div>
+        </li>
+        <li class="nav-item dropdown has-megamenu">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis fa-xl"></i></a>
+            <div class="dropdown-menu megamenu" role="menu">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-2">
+                                <a class="link3 h4" href="{% url 'blog:posts' %}">Blog</a>
+                            </div>
+                        </div>
+                        {% comment %} <div class="col-md-3">
+                            
+                        </div> {% endcomment %}
+                        <div class="col-md-6">
+                            {% if last_post %}
+                                <div class="row py-3">
+                                    <div class="col-5">
+                                        <a href="{% url 'blog:post' last_post.slug %}">
+                                            <img style="height: 140px;" src="{{ last_post.mi_imagen }}" class="card-img-top imagen-post" alt="{{ last_post.titulo }}">
+                                        </a>
+                                    </div> 
+                                    <div class="col-7"> 
+                                            <a class="badge bg-info link text-white">Último post del blog</a>
+                                        <a class="link" href="{% url 'blog:post' last_post.slug %}">
+                                            <div class="mt-2 h3 fw-normal">{{ last_post.titulo|truncatechars:107 }}</div>
+                                        </a>
+                                        <div class="mt-2 text-muted small">{{ last_post.mi_descripcion_corta|safe }} ...</div>
+                                        <div class="mt-2 text-muted small"><small>{{ last_post.fecha|date:"j F, Y" }}</small></div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- dropdown-mega-menu.// -->
+        </li>
+    </ul>
+</div>
+

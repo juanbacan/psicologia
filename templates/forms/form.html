@@ -1,0 +1,163 @@
+{% if formsets %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            {% for formset in formsets %}
+                const formsetTemplate{{ formset.prefix }}= $('#formset-template-{{ formset.prefix }}').html();
+                const formsetTable{{ formset.prefix }} = $('#formset-table-{{ formset.prefix }}');
+                let formsetCounter{{ formset.prefix }} = formsetTable{{ formset.prefix }}.find('tbody tr').length;
+                let formsetAddButton{{ formset.prefix }} = $('#add-row-{{ formset.prefix }}');
+
+                const minNum{{ formset.prefix }} = $('#id_{{ formset.prefix }}-MIN_NUM_FORMS').val();
+                const maxNUm{{ formset.prefix }} = $('#id_{{ formset.prefix }}-MAX_NUM_FORMS').val();
+
+                formsetAddButton{{ formset.prefix }}.on('click', function(e) {
+                    e.preventDefault();
+
+                    if (formsetCounter{{ formset.prefix }} >= maxNUm{{ formset.prefix }}) {
+                        showErrorMessage(mensaje='El máximo número de categorias que se puede agregar son 8', titulo="No se pueden agregar más registros");
+                        return;
+                    }
+
+                    let newRow = formsetTemplate{{ formset.prefix }}.replace(/__prefix__/g, formsetCounter{{ formset.prefix }});
+                    formsetTable{{ formset.prefix }}.find('tbody').append(newRow);
+                    formsetCounter{{ formset.prefix }}++;
+                    $("#id_{{ formset.prefix }}-TOTAL_FORMS").val(formsetCounter{{ formset.prefix }});
+                    {% if draggable %}
+                        const tbody = document.getElementById('tbody-{{ formset.prefix }}');
+                        setOrder(tbody.id);
+                    {% endif %}
+                    //tinymce?.init({
+                    //    selector: `${idNewEditor}`,
+                    //    plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                    //    toolbar_mode: 'floating',
+                    //});
+                });
+
+                formsetTable{{ formset.prefix }}.on('click', '.delete-row', function(e) {
+                    e.preventDefault();
+
+                    if (formsetCounter{{ formset.prefix }} <= minNum{{ formset.prefix }}) {
+                        showErrorMessage(mensaje='Debe haber al menos un registro', titulo="No se pueden eliminar más registros");
+                        return;
+                    }
+
+                    $(this).closest('tr').remove();
+                    formsetCounter{{ formset.prefix }}--;
+                    $("#id_{{ formset.prefix }}-TOTAL_FORMS").val(formsetCounter{{ formset.prefix }});
+                    {% if draggable %}
+                        const tbody = document.getElementById('tbody-{{ formset.prefix }}');
+                        setOrder(tbody.id);
+                    {% endif %}
+                });
+            {% endfor %}
+        });
+    </script>
+{% endif %}
+
+<div>
+    {{ form.media }}
+    {% include 'forms/formRender.html' %}
+
+    {% if formsets %}
+        <hr class="my-4">
+        {% for formset in formsets %}
+            {{ formset.media }}
+            {{ formset.management_form }}
+
+            <script type="text/html" id="formset-template-{{ formset.prefix }}">
+                <tr id="{{ formset.prefix }}-__prefix__">
+                    {% for fields in formset.empty_form.hidden_fields %}
+                        {{ fields }}
+                    {% endfor %}
+                    {% for fields in formset.empty_form.visible_fields %}
+                        {% if draggable %}
+                            <td {% if forloop.counter == 1 %}class="d-flex align-items-center gap-2"{% endif %}>
+                                {% if forloop.counter == 1 %}
+                                    <i class="handle fa-solid fa-up-down-left-right"></i>
+                                {% endif %}
+                                {{ fields }}
+                            </td>
+                        {% else %}
+                            <td>{{ fields }}</td>
+                        {% endif %}
+                    {% endfor %}
+                    <td class="text-center"><a href="#" class="delete-row">
+                        <i class="fa-solid fa-circle-xmark" style="color: #888;"></i>
+                    </a></td>
+                </tr>
+            </script>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary bg-soft">
+                    {{ formset.prefix }}
+                  </div>
+                <div class="table-responsive">
+                    <table data-sortable class="table table-bordered table-hover" id="formset-table-{{ formset.prefix }}">
+                        <thead>
+                            <tr style="vertical-align: middle;">
+                                {% for fields in formset.empty_form.visible_fields %}
+                                    <th id="col-{{ formset.prefix }}-{{ fields.name }}" style="font-size: 14px;">{{ fields.label }}</th>
+                                {% endfor %}
+                                <th id="col-{{ formset.prefix }}-DELETE"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-{{ formset.prefix }}">
+                            {% for form in formset %}
+                                {{ forms.management_form }}
+                                <tr id="{{ formset.prefix }}-{{ forloop.counter0 }}">
+                                    {% for fields in form.hidden_fields %}
+                                        {{ fields }}
+                                    {% endfor %}
+                                    {% for fields in form.visible_fields %}
+                                        {% if draggable %}
+                                            <td>
+                                                <div {% if forloop.counter == 1 %}class="d-flex align-items-center gap-2"{% endif %}>
+                                                    {% if forloop.counter == 1 %}
+                                                        <i class="handle fa-solid fa-up-down-left-right"></i>
+                                                    {% endif %}
+                                                    {{ fields }}
+                                                </div>
+                                                {% if fields.errors %}
+                                                    {% for error in fields.errors %}
+                                                        <div class="text-danger small fw-bold">{{ error }}</div>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                        {% else %}
+                                            <td>
+                                                {{ fields }}
+                                                {% if fields.errors %}
+                                                    {% for error in fields.errors %}
+                                                        <div class="text-danger small fw-bold">{{ error }}</div>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <td class="text-center">
+                                        {% if not form.instance.pk %}
+                                            <a href="#" class="delete-row">
+                                                <i class="fa-solid fa-circle-xmark" style="color: #888;"></i>
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-dark btn-sm" id="add-row-{{ formset.prefix }}">
+                            <i class="fa-solid fa-plus"></i>
+                            Agregar {{ formset.title }} adicional
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+
+
