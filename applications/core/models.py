@@ -130,7 +130,7 @@ class AplicacionWeb(ModeloBase):
     linkedin = models.URLField(null=True, blank=True, max_length=200)
 
     def url_safe(self):
-        if self.url[-1] == '/':
+        if self.url and self.url[-1] == '/':
             return self.url[:-1]
         return self.url
     

@@ -22,8 +22,7 @@ from applications.core.views import SuperuserRequiredMixin
 from applications.blog.models import Post, ImagenPost
 from applications.blog.models import Categoria as CategoriaBlog
 from .forms import *
-# Create your views here.
-
+from django.db import connection
 from crudbuilder.views import ViewBuilder
 
 from applications.core.crud import AlertaCrud, CustomUserCrud
@@ -47,10 +46,7 @@ class BaseCrudView:
         return {}
     
 def create_custom_views_for_model(builder, heading, pageview):
-    # Recupera las vistas generadas para el modelo
     views = builder.classes
-    
-    # Diccionario para las vistas personalizadas
     custom_views = {}
     
     # Itera sobre las vistas y agrega la clase base para el contexto
@@ -72,27 +68,30 @@ def create_custom_views_for_model(builder, heading, pageview):
     return custom_views
 
 
-builder_alerta = ViewBuilder('core', 'alerta', AlertaCrud)
-builder_alerta.generate_crud()
+tables = connection.introspection.table_names()
+if "django_content_type" in tables:
 
-custom_views_alerta = create_custom_views_for_model(builder_alerta, 'Aplicacion', 'Parámetros Principales')
+    builder_alerta = ViewBuilder('core', 'alerta', AlertaCrud)
+    builder_alerta.generate_crud()
 
-# Vistas personalizadas para Alerta
-CustomAlertaListView = custom_views_alerta['AlertaListView']
-CustomAlertaCreateView = custom_views_alerta['AlertaCreateView']
-CustomAlertaUpdateView = custom_views_alerta['AlertaUpdateView']
-CustomAlertaDeleteView = custom_views_alerta['AlertaDeleteView']
+    custom_views_alerta = create_custom_views_for_model(builder_alerta, 'Aplicacion', 'Parámetros Principales')
 
-builder_customuser = ViewBuilder('core', 'customuser', CustomUserCrud)
-builder_customuser.generate_crud()
+    # Vistas personalizadas para Alerta
+    CustomAlertaListView = custom_views_alerta['AlertaListView']
+    CustomAlertaCreateView = custom_views_alerta['AlertaCreateView']
+    CustomAlertaUpdateView = custom_views_alerta['AlertaUpdateView']
+    CustomAlertaDeleteView = custom_views_alerta['AlertaDeleteView']
 
-custom_views_customuser = create_custom_views_for_model(builder_customuser, 'Aplicacion', 'Parámetros Principales')
+    builder_customuser = ViewBuilder('core', 'customuser', CustomUserCrud)
+    builder_customuser.generate_crud()
 
-# Vistas personalizadas para CustomUser
-CustomCustomUserListView = custom_views_customuser['CustomuserListView']
-CustomCustomUserCreateView = custom_views_customuser['CustomuserCreateView']
-CustomCustomUserUpdateView = custom_views_customuser['CustomuserUpdateView']
-CustomCustomUserDeleteView = custom_views_customuser['CustomuserDeleteView']
+    custom_views_customuser = create_custom_views_for_model(builder_customuser, 'Aplicacion', 'Parámetros Principales')
+
+    # Vistas personalizadas para CustomUser
+    CustomCustomUserListView = custom_views_customuser['CustomuserListView']
+    CustomCustomUserCreateView = custom_views_customuser['CustomuserCreateView']
+    CustomCustomUserUpdateView = custom_views_customuser['CustomuserUpdateView']
+    CustomCustomUserDeleteView = custom_views_customuser['CustomuserDeleteView']
 
 
 

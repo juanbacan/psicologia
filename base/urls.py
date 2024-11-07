@@ -47,20 +47,20 @@ urlpatterns = [
     path('_nested_admin/', include('nested_admin.urls')),
 ]
 
+if "django_content_type" in tables:
+    from applications.administracion.views import *
 
-from applications.administracion.views import *
+    urlpatterns += [
+        path("adminitracion/core/alertas/", CustomAlertaListView.as_view(), name="alertas"),
+        path("adminitracion/core/alertas/<int:pk>/update/", CustomAlertaUpdateView.as_view(), name="update_alerta"),
+        path("adminitracion/core/alertas/<int:pk>/delete/", CustomAlertaDeleteView.as_view(), name="delete_alerta"),
+        path("adminitracion/core/alertas/create/", CustomAlertaCreateView.as_view(), name="create_alerta"),
 
-urlpatterns += [
-    path("adminitracion/core/alertas/", CustomAlertaListView.as_view(), name="alertas"),
-    path("adminitracion/core/alertas/<int:pk>/update/", CustomAlertaUpdateView.as_view(), name="update_alerta"),
-    path("adminitracion/core/alertas/<int:pk>/delete/", CustomAlertaDeleteView.as_view(), name="delete_alerta"),
-    path("adminitracion/core/alertas/create/", CustomAlertaCreateView.as_view(), name="create_alerta"),
-
-    path("adminitracion/core/usuarios/", CustomCustomUserListView.as_view(), name="usuarios"),
-    path("adminitracion/core/usuarios/<int:pk>/update/", CustomCustomUserUpdateView.as_view(), name="update_usuario"),
-    path("adminitracion/core/usuarios/<int:pk>/delete/", CustomCustomUserDeleteView.as_view(), name="delete_usuario"),
-    path("adminitracion/core/usuarios/create/", CustomCustomUserCreateView.as_view(), name="create_usuario"),
-]
+        path("adminitracion/core/usuarios/", CustomCustomUserListView.as_view(), name="usuarios"),
+        path("adminitracion/core/usuarios/<int:pk>/update/", CustomCustomUserUpdateView.as_view(), name="update_usuario"),
+        path("adminitracion/core/usuarios/<int:pk>/delete/", CustomCustomUserDeleteView.as_view(), name="delete_usuario"),
+        path("adminitracion/core/usuarios/create/", CustomCustomUserCreateView.as_view(), name="create_usuario"),
+    ]
 
 if settings.WEBPUSH_HABILITADO:
     urlpatterns += [path('webpush/', include('webpush.urls'))]

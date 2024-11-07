@@ -2,6 +2,8 @@
 {% extends 'layout/base_admin.html' %}
 
 {% block breadcrumb %}
+    {{ app_label }}
+    {{ custom_postfix_url }}
 	<nav aria-label="breadcrumb">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item"><a href="{% url app_label|add:'-'|add:custom_postfix_url|add:'-list' %}">{{pluralized_model_name|title}}</a></li>
