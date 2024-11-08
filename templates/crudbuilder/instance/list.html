@@ -2,6 +2,9 @@
 {% comment %} {% extends "crudbuilder/base.html" %} {% endcomment %}
 {% comment %} {% load crudbuilder %} {% endcomment %}
 {% load render_table from django_tables2 %}
+{% load querystring from django_tables2 %}
+{% load trans blocktrans from i18n %}
+{% load crudbuilder %}
 
 {% comment %} {% block breadcrumb %}
 	<nav aria-label="breadcrumb">
@@ -33,6 +36,9 @@
 			</div>
 
 			{% render_table table_objects "crudbuilder/widgets/tables/tables.html" %}
+			{{ object_list  }}
+		
+			{{ table_objects }}
 		</div>
 	</div>
 

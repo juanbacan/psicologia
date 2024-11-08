@@ -1,4 +1,7 @@
 from crudbuilder.abstract import BaseCrudBuilder
+import django_tables2 as tables
+from django.utils.html import format_html
+
 from .models import Alerta, CustomUser, LlamadoAccion
 
 class CustomUserCrud(BaseCrudBuilder):
@@ -29,12 +32,23 @@ class AlertaCrud(BaseCrudBuilder):
             'pageview': 'Lista de Usuarios'
         }
     
+
+
+class LlamadoAccionTable(tables.Table):
+    imagen = tables.Column()
+    class Meta:
+        model = LlamadoAccion
+        fields = ('imagen', 'url', 'pagina', 'activo')
+    
+    def render_imagen(self, value):
+        return format_html('<img src="{}" width="50" height="auto" />', value.url)
+
+    
 class LlamadoAccionCrud(BaseCrudBuilder):
     model = LlamadoAccion
     search_fields = ['url', 'pagina', 'activo']
-    tables2_fields = ('imagen', 'url', 'pagina', 'activo')
-    tables2_css_class = "table table-bordered table-condensed"
-    tables2_pagination = 20 
+    tables2_pagination = 20
+    custom_table2 = LlamadoAccionTable
 
     def custom_context(self, request, *args, **kwargs):
         return {
