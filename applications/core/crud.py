@@ -23,7 +23,6 @@ class AlertaCrud(BaseCrudBuilder):
     model = Alerta
     search_fields = ['titulo', 'descripcion']
     tables2_fields = ('titulo', 'descripcion', 'activo')
-    tables2_css_class = "table table-bordered table-condensed"
     tables2_pagination = 20 
 
     def custom_context(self, request, *args, **kwargs):

@@ -369,5 +369,5 @@ class GrupoModulo(ModeloBase):
     
     class Meta:
         verbose_name = "Módulos de un Grupo"
-        verbose_name_plural = "Grupos  de Módulos"
+        verbose_name_plural = "Grupos de Módulos"
         ordering = ['grupo__name']
