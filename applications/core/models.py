@@ -184,6 +184,10 @@ class LlamadoAccion(ModeloBase):
 
     def __str__(self):
         return self.url
+    
+    class Meta:
+        verbose_name = "Llamado a la Acción"
+        verbose_name_plural = "Llamados a la Acción"
 
 
 class EmailCredentials(models.Model):

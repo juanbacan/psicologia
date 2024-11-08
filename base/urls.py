@@ -35,8 +35,8 @@ urlpatterns = [
     path('', include('applications.core.urls')),
 
     # ***************** Administracion *****************
-    path('administracion/', include('applications.administracion.urls')),
     path('administracion/',  include('crudbuilder.urls')),
+    path('administracion/', include('applications.administracion.urls')),
 
     # ***************** Blog *****************
     path('', include('applications.blog.urls')),

@@ -52,8 +52,6 @@ def plural(text):
         'index': 'indices',
         'appendix': 'appendices',
         'criterion': 'criteria',
-
-
     }
 
     if text in aberrant:

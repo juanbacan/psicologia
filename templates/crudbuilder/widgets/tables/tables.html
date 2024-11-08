@@ -16,7 +16,7 @@
 {% endif %}
 
 {% block table %}
-    <table class="table table-sm table-bordered"{% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
+    <table class="table table-striped table-hover small"{% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
         {% block table.thead %}
             <thead>
             <tr>
@@ -41,8 +41,21 @@
                                 <td {{ column.attrs.td.as_html }}>{{ cell }}</td>
                             {% endfor %}
                             <td>
-                                <a class="btn btn-primary pull-right" href="{% url model_info.0|add:'-'|add:model_info.1|add:'-update' row.record.pk %}"><i class="glyphicon glyphicon-pencil"></i> Update</a>
-                                <a class="btn btn-primary pull-right" href="{% url model_info.0|add:'-'|add:model_info.1|add:'-delete' row.record.pk %}"><i class="glyphicon glyphicon-remove-sign"></i> Delete</a>
+                                <div class="dropdown">
+                                    <button class="btn btn-info btn-xs dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                      Acciones
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        {% comment %} <li><a class="dropdown-item" href="{% url 'administracion' %}?action=edit_alerta&id={{ alerta.id }}"><i class="fa-solid fa-pencil"></i> Editar</a></li> {% endcomment %}
+                                        {% comment %} <li><a class="dropdown-item formmodal" href="javascript:" nhref="{% url 'administracion' %}?action=del_alerta&id={{ alerta.id }}"><i class="fa-solid fa-trash"></i> Eliminar</a></li> {% endcomment %}
+                                        {% comment %} <li>
+                                            <a class="dropdown-item" href="{% url model_info.0|add:'-'|add:model_info.1|add:'-update' row.record.pk %}"><i class="fa-solid fa-pencil"></i> Acttualizar</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url model_info.0|add:'-'|add:model_info.1|add:'-delete' row.record.pk %}"><i class="fa-solid fa-trash"></i> Eliminar</a>
+                                        </li> {% endcomment %}
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     {% endblock table.tbody.row %}

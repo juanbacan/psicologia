@@ -9,7 +9,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url app_label|add:'-'|add:custom_postfix_url|add:'-list' %}">{{pluralized_model_name|title}}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Actualizar {{actual_model_name}}</li>
+            <li class="breadcrumb-item active" aria-current="page">Eliminar {{actual_model_name}}</li>
         </ol>
     </nav>
 {% endblock %}

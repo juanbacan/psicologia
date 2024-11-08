@@ -1,5 +1,5 @@
 from crudbuilder.abstract import BaseCrudBuilder
-from .models import Alerta, CustomUser
+from .models import Alerta, CustomUser, LlamadoAccion
 
 class CustomUserCrud(BaseCrudBuilder):
     model = CustomUser
@@ -20,6 +20,19 @@ class AlertaCrud(BaseCrudBuilder):
     model = Alerta
     search_fields = ['titulo', 'descripcion']
     tables2_fields = ('titulo', 'descripcion', 'activo')
+    tables2_css_class = "table table-bordered table-condensed"
+    tables2_pagination = 20 
+
+    def custom_context(self, request, *args, **kwargs):
+        return {
+            'heading': 'Aplicacion',
+            'pageview': 'Lista de Usuarios'
+        }
+    
+class LlamadoAccionCrud(BaseCrudBuilder):
+    model = LlamadoAccion
+    search_fields = ['url', 'pagina', 'activo']
+    tables2_fields = ('imagen', 'url', 'pagina', 'activo')
     tables2_css_class = "table table-bordered table-condensed"
     tables2_pagination = 20 
 
