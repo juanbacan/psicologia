@@ -27,72 +27,6 @@ from crudbuilder.views import ViewBuilder
 
 from applications.core.crud import AlertaCrud, CustomUserCrud
 
-class BaseCrudView:
-    heading = ''
-    pageview = ''
-
-    def __init__(self, heading='', pageview='', *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.heading = heading or self.heading
-        self.pageview = pageview or self.pageview
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['heading'] = self.heading
-        context['pageview'] = self.pageview
-        return context
-    
-    def get_additional_context(self):
-        return {}
-    
-def create_custom_views_for_model(builder, heading, pageview):
-    views = builder.classes
-    custom_views = {}
-    
-    # Itera sobre las vistas y agrega la clase base para el contexto
-    for view_name, view_class in views.items():
-        # Crea una nueva vista personalizada que herede de BaseCrudView
-        custom_view_class = type(
-            f"Custom{view_name}",
-            (BaseCrudView, view_class),
-            {
-                # Sobreescribe el método get_context_data
-                'get_context_data': lambda self, **kwargs: {**super(type(self), self).get_context_data(**kwargs), **self.get_additional_context()},
-                'heading': heading,  # Asigna el heading específico para cada modelo
-                'pageview': pageview  # Asigna el pageview específico para cada modelo
-            }
-        )
-        
-        # Agrega la vista personalizada al diccionario
-        custom_views[view_name] = custom_view_class
-    return custom_views
-
-
-tables = connection.introspection.table_names()
-if "django_content_type" in tables:
-
-    builder_alerta = ViewBuilder('core', 'alerta', AlertaCrud)
-    builder_alerta.generate_crud()
-
-    custom_views_alerta = create_custom_views_for_model(builder_alerta, 'Aplicacion', 'Parámetros Principales')
-
-    # Vistas personalizadas para Alerta
-    CustomAlertaListView = custom_views_alerta['AlertaListView']
-    CustomAlertaCreateView = custom_views_alerta['AlertaCreateView']
-    CustomAlertaUpdateView = custom_views_alerta['AlertaUpdateView']
-    CustomAlertaDeleteView = custom_views_alerta['AlertaDeleteView']
-
-    builder_customuser = ViewBuilder('core', 'customuser', CustomUserCrud)
-    builder_customuser.generate_crud()
-
-    custom_views_customuser = create_custom_views_for_model(builder_customuser, 'Aplicacion', 'Parámetros Principales')
-
-    # Vistas personalizadas para CustomUser
-    CustomCustomUserListView = custom_views_customuser['CustomuserListView']
-    CustomCustomUserCreateView = custom_views_customuser['CustomuserCreateView']
-    CustomCustomUserUpdateView = custom_views_customuser['CustomuserUpdateView']
-    CustomCustomUserDeleteView = custom_views_customuser['CustomuserDeleteView']
-
 
 
 
@@ -724,3 +658,67 @@ class AdministracionView(SuperuserRequiredMixin, View):
             return render(request, 'administracion/dashboard.html', context)
 
 
+# class BaseCrudView:
+#     heading = ''
+#     pageview = ''
+
+#     def __init__(self, heading='', pageview='', *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.heading = heading or self.heading
+#         self.pageview = pageview or self.pageview
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['heading'] = self.heading
+#         context['pageview'] = self.pageview
+#         return context
+    
+#     def get_additional_context(self):
+#         return {}
+    
+# def create_custom_views_for_model(builder, heading, pageview):
+#     views = builder.classes
+#     custom_views = {}
+    
+#     # Itera sobre las vistas y agrega la clase base para el contexto
+#     for view_name, view_class in views.items():
+#         # Crea una nueva vista personalizada que herede de BaseCrudView
+#         custom_view_class = type(
+#             f"Custom{view_name}",
+#             (BaseCrudView, view_class),
+#             {
+#                 # Sobreescribe el método get_context_data
+#                 'get_context_data': lambda self, **kwargs: {**super(type(self), self).get_context_data(**kwargs), **self.get_additional_context()},
+#                 'heading': heading,  # Asigna el heading específico para cada modelo
+#                 'pageview': pageview  # Asigna el pageview específico para cada modelo
+#             }
+#         )
+        
+#         # Agrega la vista personalizada al diccionario
+#         custom_views[view_name] = custom_view_class
+#     return custom_views
+
+# tables = connection.introspection.table_names()
+# if "django_content_type" in tables:
+
+#     builder_alerta = ViewBuilder('core', 'alerta', AlertaCrud)
+#     builder_alerta.generate_crud()
+
+#     custom_views_alerta = create_custom_views_for_model(builder_alerta, 'Aplicacion', 'Parámetros Principales')
+
+#     # Vistas personalizadas para Alerta
+#     CustomAlertaListView = custom_views_alerta['AlertaListView']
+#     CustomAlertaCreateView = custom_views_alerta['AlertaCreateView']
+#     CustomAlertaUpdateView = custom_views_alerta['AlertaUpdateView']
+#     CustomAlertaDeleteView = custom_views_alerta['AlertaDeleteView']
+
+#     builder_customuser = ViewBuilder('core', 'customuser', CustomUserCrud)
+#     builder_customuser.generate_crud()
+
+#     custom_views_customuser = create_custom_views_for_model(builder_customuser, 'Aplicacion', 'Parámetros Principales')
+
+#     # Vistas personalizadas para CustomUser
+#     CustomCustomUserListView = custom_views_customuser['CustomuserListView']
+#     CustomCustomUserCreateView = custom_views_customuser['CustomuserCreateView']
+#     CustomCustomUserUpdateView = custom_views_customuser['CustomuserUpdateView']
+#     CustomCustomUserDeleteView = custom_views_customuser['CustomuserDeleteView']

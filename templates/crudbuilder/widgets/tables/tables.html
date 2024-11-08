@@ -5,9 +5,9 @@
 {% block css %}
     <style>
         .table-container .cardinality {
-    float: right;
-    color: #8d8d8d;
-}
+            float: right;
+            color: #8d8d8d;
+        }
     </style>
 {% endblock %}
 
@@ -16,7 +16,7 @@
 {% endif %}
 
 {% block table %}
-    <table class="table table-compact table-bordered"{% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
+    <table class="table table-sm table-bordered"{% if table.attrs %} {{ table.attrs.as_html }}{% endif %}>
         {% block table.thead %}
             <thead>
             <tr>
@@ -27,19 +27,26 @@
                         <th {{ column.attrs.th.as_html }}>{{ column.header }}</th>
                     {% endif %}
                 {% endfor %}
+                <th>Acciones</th>
             </tr>
             </thead>
         {% endblock table.thead %}
         {% block table.tbody %}
             <tbody>
             {% for row in table.page.object_list|default:table.rows %} {# support pagination #}
-                {% block table.tbody.row %}
-                    <tr class="{% cycle "odd" "even" %}">
-                        {% for column, cell in row.items %}
-                            <td {{ column.attrs.td.as_html }}>{{ cell }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endblock table.tbody.row %}
+                {% with model_info=row.record.get_model_info %}
+                    {% block table.tbody.row %}
+                        <tr class="{% cycle "odd" "even" %}">
+                            {% for column, cell in row.items %}
+                                <td {{ column.attrs.td.as_html }}>{{ cell }}</td>
+                            {% endfor %}
+                            <td>
+                                <a class="btn btn-primary pull-right" href="{% url model_info.0|add:'-'|add:model_info.1|add:'-update' row.record.pk %}"><i class="glyphicon glyphicon-pencil"></i> Update</a>
+                                <a class="btn btn-primary pull-right" href="{% url model_info.0|add:'-'|add:model_info.1|add:'-delete' row.record.pk %}"><i class="glyphicon glyphicon-remove-sign"></i> Delete</a>
+                            </td>
+                        </tr>
+                    {% endblock table.tbody.row %}
+                {% endwith %}
             {% empty %}
                 {% if table.empty_text %}
                     {% block table.tbody.empty_text %}

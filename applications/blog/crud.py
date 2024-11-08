@@ -1,10 +1,10 @@
 from crudbuilder.abstract import BaseCrudBuilder
-from .models import Alerta, CustomUser
+from .models import Categoria, Post
 
-class CustomUserCrud(BaseCrudBuilder):
-    model = CustomUser
-    search_fields = ['username', 'email']
-    tables2_fields = ('username', 'email', 'is_active')
+class CategoriaCrud(BaseCrudBuilder):
+    model = Categoria
+    search_fields = ['nombre', 'slug', 'descripcion']
+    tables2_fields = ('nombre', 'slug', 'activo')
     tables2_css_class = "table table-bordered table-condensed"
     tables2_pagination = 20  # default is 10
 
@@ -15,13 +15,12 @@ class CustomUserCrud(BaseCrudBuilder):
         }
     
 
-
-class AlertaCrud(BaseCrudBuilder):
-    model = Alerta
-    search_fields = ['titulo', 'descripcion']
-    tables2_fields = ('titulo', 'descripcion', 'activo')
+class PostCrud(BaseCrudBuilder):
+    model = Post
+    search_fields = ['titulo', 'slug']
+    tables2_fields = ('titulo', 'fecha', 'activo')
     tables2_css_class = "table table-bordered table-condensed"
-    tables2_pagination = 20 
+    tables2_pagination = 20  # default is 10
 
     def custom_context(self, request, *args, **kwargs):
         return {

@@ -99,6 +99,9 @@ class ModeloBase(models.Model):
         self.modified_by_id = user_id
         super(ModeloBase, self).save(*args, **kwargs)
 
+    def get_model_info(self):
+        return self._meta.app_label, self._meta.verbose_name_plural.lower()
+
     class Meta:
         abstract = True
 
@@ -151,8 +154,8 @@ CHOICES_COLOR = (
 )
 
 class Alerta(ModeloBase):
-    titulo = models.CharField(max_length=100)
-    descripcion = tinymce_models.HTMLField()
+    titulo = models.CharField(max_length=100, verbose_name=u'Título')
+    descripcion = tinymce_models.HTMLField(verbose_name=u'Descripción')
     color = models.CharField(max_length=100, choices=CHOICES_COLOR, null=True, blank=True)
     activo = models.BooleanField(default=False)
     url = models.URLField(null=True, blank=True, max_length=200, verbose_name=u'URL')
